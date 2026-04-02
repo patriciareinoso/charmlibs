@@ -12,22 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Integration tests using real Juju and pre-packed charm(s)."""
+"""Utils for integration tests."""
 
 import json
 from datetime import datetime
 
 import jubilant
-from tenacity import retry, stop_after_delay, wait_fixed
 
 TRACE_FILE = '/var/lib/charm-rolling-ops/transitions.log'
-
-
-@retry(wait=wait_fixed(10), stop=stop_after_delay(60), reraise=True)
-def wait_for_etcdctl_env(juju: jubilant.Juju, unit: str) -> None:
-    task = juju.exec('test -f /var/lib/rollingops/etcd/etcdctl.json', unit=unit)
-    if task.status != 'completed' or task.return_code != 0:
-        raise RuntimeError('etcdctl config file not ready')
 
 
 def get_unit_events(juju: jubilant.Juju, unit: str) -> list[dict[str, str]]:

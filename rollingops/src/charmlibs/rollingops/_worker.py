@@ -34,13 +34,14 @@ WORKER_PID_FIELD = 'etcd-rollingops-worker-pid'
 class EtcdRollingOpsAsyncWorker(Object):
     """Spawns and manages the external rolling-ops worker process."""
 
-    def __init__(self, charm: CharmBase, peer_relation_name: str, owner: str):
+    def __init__(self, charm: CharmBase, peer_relation_name: str, owner: str, cluster_id: str):
         super().__init__(charm, 'etcd-rollingops-async-worker')
         self._charm = charm
         self._peer_relation_name = peer_relation_name
         self._run_cmd = '/usr/bin/juju-exec'
         self._owner = owner
         self._charm_dir = charm.charm_dir
+        self._cluster_id = cluster_id
 
     @property
     def _relation(self) -> Relation | None:
@@ -109,6 +110,8 @@ class EtcdRollingOpsAsyncWorker(Object):
                 str(self._charm_dir),
                 '--owner',
                 self._owner,
+                '--cluster-id',
+                self._cluster_id,
             ],
             cwd=str(self._charm_dir),
             stdout=log_out,
