@@ -114,7 +114,7 @@ def generate(common_name: str) -> SharedCertificate:
             CLIENT_KEY_PATH,
             CA_CERT_PATH,
         )
-
+    common_name = common_name[:64]
     ca_key = PrivateKey.generate(key_size=KEY_SIZE)
     ca_attributes = CertificateRequestAttributes(
         common_name=common_name,
